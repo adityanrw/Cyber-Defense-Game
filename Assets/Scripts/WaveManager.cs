@@ -14,18 +14,15 @@ public class WaveManager : MonoBehaviour
     public float spawnDelay = 0.8f;
 
     private bool waveStarted = false;
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space) && !waveStarted)
-        {
-            StartWave();
-        }
-    }
+    private bool waveFinished = false;
 
     public void StartWave()
     {
+        if (waveStarted) return;
+
         waveStarted = true;
+        waveFinished = false;
+
         StartCoroutine(SpawnWave());
     }
 
@@ -36,6 +33,9 @@ public class WaveManager : MonoBehaviour
             SpawnEnemy();
             yield return new WaitForSeconds(spawnDelay);
         }
+
+        waveFinished = true;
+        Debug.Log("Wave selesai spawn semua enemy.");
     }
 
     private void SpawnEnemy()
@@ -64,5 +64,19 @@ public class WaveManager : MonoBehaviour
         {
             enemy.SetPath(waypoints);
         }
+        else
+        {
+            Debug.LogError("Prefab malware belum punya script Enemy.");
+        }
+    }
+
+    public bool IsWaveStarted()
+    {
+        return waveStarted;
+    }
+
+    public bool IsWaveFinished()
+    {
+        return waveFinished;
     }
 }
